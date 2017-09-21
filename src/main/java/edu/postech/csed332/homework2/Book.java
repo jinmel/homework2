@@ -2,10 +2,14 @@ package edu.postech.csed332.homework2;
 
 import java.util.List;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 /**
  * Our books will contain only the title and the author(s), 
  * each of which is represented as simple strings. 
- * “Author” can encode multiple people, possibly with 
+ * �쏛uthor�� can encode multiple people, possibly with 
  * some special characters to separate people. 
  * 
  * A book can be exported to and imported from a string representation. 
@@ -23,6 +27,8 @@ import java.util.List;
 public final class Book extends Element {
     private String title;
     private String author;
+    
+    public static String TYPE = "BOOK";
 
     /**
      * Builds a book with the given title and author.
@@ -31,7 +37,8 @@ public final class Book extends Element {
      * @param author the author of the book
      */
     public Book(String title, String author) {
-        // TODO implement this
+    	this.title = title;
+    	this.author = author;
     }
 
     /**
@@ -41,7 +48,24 @@ public final class Book extends Element {
      * @param stringRepresentation the string representation
      */
     public Book(String stringRepresentation) {
-        // TODO implement this
+    	JSONParser parser = new JSONParser();
+    	try {
+    		JSONObject json = (JSONObject) parser.parse(stringRepresentation);
+    		String type = (String) json.get("type");
+    		assert type == Book.TYPE;
+    		this.title = (String)json.get("title");
+    		this.author = (String)json.get("author");
+    		
+    	} catch (ParseException e) {
+    	}
+    }
+    
+    public JSONObject toJSON() {
+    	JSONObject json = new JSONObject();
+    	json.put("title", this.title);
+    	json.put("author", this.author);
+    	json.put("type", Book.TYPE);
+    	return json;
     }
 
     /**
